@@ -1,7 +1,7 @@
 package main
 
 import (
-	"data_analysis/app"
+	"github.com/pressus/app"
 )
 
 func main() {

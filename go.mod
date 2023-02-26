@@ -1,10 +1,11 @@
-module data_analysis
+module github.com/pressus
 
 go 1.19
 
 require (
 	github.com/gofiber/fiber/v2 v2.42.0
 	github.com/kelseyhightower/envconfig v1.4.0
+	github.com/sirupsen/logrus v1.9.0
 	gopkg.in/yaml.v2 v2.4.0
 )
 

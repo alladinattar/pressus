@@ -1,8 +1,8 @@
 package app
 
 import (
-	"data_analysis/config"
 	"github.com/gofiber/fiber/v2"
+	"github.com/pressus/config"
 	"log"
 )
 
