@@ -7,10 +7,10 @@ import (
 )
 
 func SetupRoutes(app fiber.Router, service usecases.Service) {
-	api := app.Group("api/v1")
+	api := app.Group("/api/v1")
 
-	flows := api.Group("flows")
-	flows.Get("flows", handlers.GetFlows(service))
+	flows := api.Group("/flows")
+	flows.Get("/", handlers.GetFlows(service))
 
 	flows.Get("/:flow_name", handlers.GetArticlesByFlow(service))
 

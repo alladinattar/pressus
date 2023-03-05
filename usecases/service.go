@@ -2,10 +2,11 @@ package usecases
 
 import (
 	"github.com/pressus/config"
+	"github.com/pressus/models/presenters"
 )
 
 type Service interface {
-	GetFlows() ([]string, error)
+	GetFlows() ([]presenters.FlowObj, error)
 	GetArticlesByFlow(flow string) ([]string, error)
 	GetEnv() *config.Env
 }
