@@ -11,6 +11,9 @@ type Config struct {
 		Port    string `yaml:"port" envconfig:"API_PORT"`
 		Version string `yaml:"version" envconfig:"API_VERSION"`
 	} `yaml:"api"`
+	Parser struct {
+		DefaultRoute string `yaml:"default_route" envconfig:"DEFAULT_ROUTE"`
+	} `yaml:"parser"`
 }
 
 func ReadConfFile(cfg *Config) error {

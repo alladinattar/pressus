@@ -9,5 +9,9 @@ import (
 func SetupRoutes(app fiber.Router, service usecases.Service) {
 	api := app.Group("api/v1")
 
-	api.Get("data", handlers.GetData(service))
+	flows := api.Group("flows")
+	flows.Get("flows", handlers.GetFlows(service))
+
+	flows.Get("/:flow_name", handlers.GetArticlesByFlow(service))
+
 }

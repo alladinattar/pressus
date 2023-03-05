@@ -7,13 +7,39 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func GetData(service usecases.Service) fiber.Handler {
+func GetFlows(service usecases.Service) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		sess, _ := service.GetEnv().SessionStore.Get(c)
-		log.Info("Session fresh 2: ", sess.Fresh())
-		domains := service.GetData()
+		flows, err := service.GetFlows()
+		if err != nil {
+			response := presenters.ResponseStruct{
+				Data:   nil,
+				Status: "failed",
+			}
+			log.Error("Failed get flows, error: ", err.Error())
+			return c.Status(fiber.StatusOK).JSON(response)
+		}
 		response := presenters.ResponseStruct{
-			Data:   domains,
+			Data:   flows,
+			Status: "success",
+		}
+		return c.Status(fiber.StatusOK).JSON(response)
+	}
+}
+
+func GetArticlesByFlow(service usecases.Service) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		flow := c.Params("flow_name")
+		articles, err := service.GetArticlesByFlow(flow)
+		if err != nil {
+			response := presenters.ResponseStruct{
+				Data:   nil,
+				Status: "failed",
+			}
+			log.Error("Failed get flows, error: ", err.Error())
+			return c.Status(fiber.StatusOK).JSON(response)
+		}
+		response := presenters.ResponseStruct{
+			Data:   articles,
 			Status: "success",
 		}
 		return c.Status(fiber.StatusOK).JSON(response)

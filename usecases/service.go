@@ -5,7 +5,8 @@ import (
 )
 
 type Service interface {
-	GetData() []string
+	GetFlows() ([]string, error)
+	GetArticlesByFlow(flow string) ([]string, error)
 	GetEnv() *config.Env
 }
 

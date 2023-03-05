@@ -3,6 +3,8 @@ package app
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/pressus/config"
+	"github.com/pressus/routes"
+	"github.com/pressus/usecases"
 	"log"
 )
 
@@ -17,6 +19,8 @@ func Run() {
 		AppName: "pressus",
 	})
 
+	service := usecases.NewService(env)
+	routes.SetupRoutes(app, service)
 	log.Fatal(app.Listen(env.Config.Api.Port))
 }
 
