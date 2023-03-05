@@ -41,7 +41,6 @@ func GetArticlesByFlow(service usecases.Service) fiber.Handler {
 			log.Error("Failed get flows, error: ", err.Error())
 			return c.Status(fiber.StatusOK).JSON(response)
 		}
-		fmt.Println("fasdfasdfsa")
 		response := presenters.ResponseStruct{
 			Data:   articles,
 			Status: "success",
