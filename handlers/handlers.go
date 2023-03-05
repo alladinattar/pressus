@@ -30,9 +30,12 @@ func GetFlows(service usecases.Service) fiber.Handler {
 
 func GetArticlesByFlow(service usecases.Service) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		fmt.Println(c.Route().Params)
 		flow := c.Params("flow_name")
+		//cpuProfile, _ := os.Create("cpuprofile")
+		//pprof.StartCPUProfile(cpuProfile)
 		articles, err := service.GetArticlesByFlow(flow)
+		//pprof.StopCPUProfile()
+
 		if err != nil {
 			response := presenters.ResponseStruct{
 				Data:   nil,

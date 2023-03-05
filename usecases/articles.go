@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gofiber/fiber/v2"
+	log "github.com/sirupsen/logrus"
 	"strconv"
 )
 
@@ -24,6 +25,7 @@ func (s *service) extractArticles(flow string) ([]string, error) {
 		UserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
 	}
 	for i := 1; ; i++ {
+		log.Info(len(articles), i)
 		requestString := fmt.Sprintf("%s/%s/%s/page/%s/", s.GetEnv().Config.Parser.DefaultRoute, "flows", flow, strconv.Itoa(i))
 		var resp []byte
 		statusCode, body, err := client.Get(requestString).Get(resp, requestString)
@@ -45,7 +47,7 @@ func (s *service) extractArticles(flow string) ([]string, error) {
 			articles = append(articles, s.Text())
 		})
 
-		if s.isLatestPage(doc, string(i)) {
+		if s.isLatestPage(doc, strconv.Itoa(i)) {
 			return articles, nil
 		}
 	}
@@ -58,7 +60,7 @@ func (s *service) isLatestPage(doc *goquery.Document, currentPage string) bool {
 	doc.Find(".link--hAARL").Each(func(i int, selection *goquery.Selection) {
 		pageNumbers = append(pageNumbers, selection.Text())
 	})
-
+	log.Info("Pages: ", pageNumbers)
 	if len(pageNumbers) == 0 {
 		return true
 	}
