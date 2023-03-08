@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	log "github.com/sirupsen/logrus"
 	"strconv"
+	"sync"
 )
 
 var (
@@ -26,12 +27,14 @@ func (s *service) extractArticles(flow string) ([]string, error) {
 	pages := make(chan int)
 	var articles []string
 	go s.checkPages(flow, pages)
+	var wg sync.WaitGroup
 	for page := range pages {
-		s.parseArticles(&articles, flow, strconv.Itoa(page))
+		wg.Add(1)
+		go s.parseArticles(&wg, &articles, flow, strconv.Itoa(page))
 		fmt.Println(page)
 	}
+	wg.Wait()
 	return articles, nil
-
 }
 
 func (s *service) checkPages(flow string, pages chan<- int) {
@@ -55,9 +58,9 @@ func (s *service) checkPages(flow string, pages chan<- int) {
 	}
 }
 
-func (s *service) parseArticles(articles *[]string, flow, page string) error {
+func (s *service) parseArticles(wg *sync.WaitGroup, articles *[]string, flow, page string) error {
+	defer wg.Done()
 	log.Println("Page number ", page)
-
 	client := fiber.Client{
 		UserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
 	}
@@ -131,19 +134,19 @@ func (s *service) parseArticles(articles *[]string, flow, page string) error {
 //	return false
 //}
 
-func (s *service) checkPage(flow, pages chan<- string) {
-	client := fiber.Client{
-		UserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
-	}
-	for i := 1; ; i++ {
-		requestString := fmt.Sprintf("%s/%s/%s/page/%s/", s.GetEnv().Config.Parser.DefaultRoute, "flows", flow, strconv.Itoa(i))
-		var resp []byte
-		statusCode, _, err := client.Head(requestString).Get(resp, requestString)
-		if err != nil {
-			panic(err)
-		}
-		if statusCode == 404 {
-			LAST_PAGE = true
-		}
-	}
-}
+//func (s *service) checkPage(flow, pages chan<- string) {
+//	client := fiber.Client{
+//		UserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
+//	}
+//	for i := 1; ; i++ {
+//		requestString := fmt.Sprintf("%s/%s/%s/page/%s/", s.GetEnv().Config.Parser.DefaultRoute, "flows", flow, strconv.Itoa(i))
+//		var resp []byte
+//		statusCode, _, err := client.Head(requestString).Get(resp, requestString)
+//		if err != nil {
+//			panic(err)
+//		}
+//		if statusCode == 404 {
+//			LAST_PAGE = true
+//		}
+//	}
+//}
