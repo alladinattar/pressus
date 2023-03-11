@@ -10,10 +10,6 @@ import (
 	"sync"
 )
 
-var (
-	LAST_PAGE = false
-)
-
 func (s *service) GetArticlesByFlow(flow string) ([]string, error) {
 	articles, err := s.extractArticles(flow)
 	if err != nil {
@@ -45,14 +41,13 @@ func (s *service) checkPages(flow string, pages chan<- int) {
 		requestString := fmt.Sprintf("%s/%s/%s/page/%s/", s.GetEnv().Config.Parser.DefaultRoute, "flows", flow, strconv.Itoa(i))
 		var resp []byte
 		statusCode, _, err := client.Head(requestString).Get(resp, requestString)
-		log.Println("Page: ", i, "\nStatus: ", statusCode)
 		if err != nil {
-			fmt.Println(err)
+			log.Error(err)
 		}
-		if statusCode == 404 {
+		if statusCode == fiber.StatusNotFound {
 			close(pages)
 			return
-		} else if statusCode == 200 {
+		} else if statusCode == fiber.StatusOK {
 			pages <- i
 		}
 	}

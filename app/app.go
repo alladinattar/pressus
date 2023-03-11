@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/pressus/config"
 	"github.com/pressus/routes"
@@ -21,6 +22,7 @@ func Run() {
 	})
 
 	app.Use(pprof.New())
+	app.Use(logger.New())
 
 	service := usecases.NewService(env)
 	routes.SetupRoutes(app, service)
