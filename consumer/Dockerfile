@@ -2,7 +2,7 @@ FROM golang:1.19 AS builder
 RUN apt update && apt install git && apt install tzdata
 RUN apt install ca-certificates && update-ca-certificates
 WORKDIR $GOPATH/src/pressus
-COPY . .
+COPY .. .
 
 RUN go mod download
 

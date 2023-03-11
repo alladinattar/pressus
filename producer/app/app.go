@@ -18,7 +18,7 @@ func Run() {
 	}
 
 	app := fiber.New(fiber.Config{
-		AppName: "pressus",
+		AppName: "pressus-producer",
 	})
 
 	app.Use(pprof.New())
