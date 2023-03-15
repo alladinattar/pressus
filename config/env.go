@@ -1,25 +1,18 @@
 package config
 
 import (
-	"database/sql"
-	"github.com/gofiber/fiber/v2/middleware/session"
-	"time"
+	"github.com/rabbitmq/amqp091-go"
 )
 
 type Env struct {
-	SessionStore *session.Store
 	Config       *Config
-	DB           *sql.DB
+	QueueChannel *amqp091.Channel
 }
 
 func NewEnv() *Env {
 
 	return &Env{
-		SessionStore: session.New(session.Config{
-			CookieHTTPOnly: true,
-			Expiration:     time.Hour * 24 * 30,
-		}),
-		Config: &Config{},
-		DB:     &sql.DB{},
+		Config:       &Config{},
+		QueueChannel: &amqp091.Channel{},
 	}
 }

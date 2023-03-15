@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/pressus/config"
+	"github.com/pressus/repository"
 	"github.com/pressus/routes"
 	"github.com/pressus/usecases"
 	"log"
@@ -24,7 +25,18 @@ func Run() {
 	app.Use(pprof.New())
 	app.Use(logger.New())
 
-	service := usecases.NewService(env)
+	queueConnection, channel, err := QueueConnection(env)
+	defer queueConnection.Close()
+	defer channel.Close()
+	if err != nil {
+		log.Fatalf("Failed connect to queue: %s", err.Error())
+	}
+
+	repo := repository.NewQueueRepo(queueConnection, channel)
+	service := usecases.NewService(env, repo)
+
+	go service.ProcessLinks(queueConnection, channel)
+
 	routes.SetupRoutes(app, service)
 	log.Fatal(app.Listen(env.Config.Api.Port))
 }

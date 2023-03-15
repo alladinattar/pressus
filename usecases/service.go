@@ -3,6 +3,7 @@ package usecases
 import (
 	"github.com/pressus/config"
 	"github.com/pressus/models/presenters"
+	"github.com/pressus/repository"
 )
 
 type Service interface {
@@ -13,11 +14,12 @@ type Service interface {
 }
 
 type service struct {
-	env *config.Env
+	env  *config.Env
+	repo repository.QueueRepo
 }
 
-func NewService(env *config.Env) Service {
-	return &service{env}
+func NewService(env *config.Env, repo repository.QueueRepo) Service {
+	return &service{env, repo}
 }
 
 func (s *service) GetEnv() *config.Env {

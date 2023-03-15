@@ -14,6 +14,11 @@ type Config struct {
 	Parser struct {
 		DefaultRoute string `yaml:"default_route" envconfig:"DEFAULT_ROUTE"`
 	} `yaml:"parser"`
+	Queue struct {
+		Ip       string `yaml:"ip" envconfig:"IP"`
+		Username string `yaml:"username" `
+		Password string `yaml:"password" envconfig:"PASSWORD"`
+	} `yaml:"queue"`
 }
 
 func ReadConfFile(cfg *Config) error {

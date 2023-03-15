@@ -11,5 +11,10 @@ func (s *service) SaveArticlesByFlow(flow string) (bool, error) {
 	for i, article := range articles {
 		log.Infof("%d: %s", i, article.Link)
 	}
+
+	s.repo.SaveLinksToArticles(articles)
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
