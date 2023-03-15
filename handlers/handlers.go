@@ -29,7 +29,7 @@ func GetFlows(service usecases.Service) fiber.Handler {
 func GetArticlesByFlow(service usecases.Service) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		flow := c.Params("flow_name")
-		articles, err := service.GetArticlesByFlow(flow)
+		_, err := service.GetArticlesByFlow(flow)
 
 		if err != nil {
 			response := presenters.ResponseStruct{
@@ -40,7 +40,7 @@ func GetArticlesByFlow(service usecases.Service) fiber.Handler {
 			return c.Status(fiber.StatusOK).JSON(response)
 		}
 		response := presenters.ResponseStruct{
-			Data:   articles,
+			Data:   nil,
 			Status: "success",
 		}
 		return c.Status(fiber.StatusOK).JSON(response)

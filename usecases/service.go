@@ -7,7 +7,8 @@ import (
 
 type Service interface {
 	GetFlows() ([]presenters.FlowObj, error)
-	GetArticlesByFlow(flow string) ([]string, error)
+	GetArticlesByFlow(flow string) ([]presenters.ArticleObj, error)
+	SaveArticlesByFlow(flow string) (bool, error)
 	GetEnv() *config.Env
 }
 
