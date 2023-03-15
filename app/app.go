@@ -35,7 +35,7 @@ func Run() {
 	repo := repository.NewQueueRepo(queueConnection, channel)
 	service := usecases.NewService(env, repo)
 
-	go service.ProcessLinks(queueConnection, channel)
+	go service.ProcessLinks()
 
 	routes.SetupRoutes(app, service)
 	log.Fatal(app.Listen(env.Config.Api.Port))

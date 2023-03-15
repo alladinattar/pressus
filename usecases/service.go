@@ -10,6 +10,7 @@ type Service interface {
 	GetFlows() ([]presenters.FlowObj, error)
 	GetArticlesByFlow(flow string) ([]presenters.ArticleObj, error)
 	SaveArticlesByFlow(flow string) (bool, error)
+	ProcessLinks()
 	GetEnv() *config.Env
 }
 

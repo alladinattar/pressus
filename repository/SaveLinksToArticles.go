@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"github.com/pressus/models/presenters"
 	amqp "github.com/rabbitmq/amqp091-go"
-	log "github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -42,7 +41,7 @@ func (d *queueRepo) SaveLinksToArticles(articlesTitles []presenters.ArticleObj) 
 		if err != nil {
 			return err
 		}
-		log.Printf(" [x] Sent %s\n", body)
+		//log.Printf(" [x] Sent %s\n", body)
 	}
 	return nil
 }

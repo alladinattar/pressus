@@ -56,7 +56,6 @@ func (s *service) checkPages(flow string, pages chan<- int) {
 
 func (s *service) parseArticles(wg *sync.WaitGroup, articles *[]presenters.ArticleObj, flow, page string) error {
 	defer wg.Done()
-	log.Println("Page number ", page)
 	client := fiber.Client{
 		UserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
 	}
