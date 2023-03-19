@@ -16,8 +16,8 @@ func (s *service) ProcessLinks() {
 	client := fiber.Client{
 		UserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
 	}
-	var articleBodies []string
 	for task := range tasks {
+		log.Info("Received from tasks: ", task.Title)
 		requestString := fmt.Sprintf("%s%s", s.GetEnv().Config.Parser.DefaultRoute, task.Link)
 		var resp []byte
 		_, body, err := client.Get(requestString).Get(resp, requestString)
@@ -29,10 +29,8 @@ func (s *service) ProcessLinks() {
 			log.Error("Failed parse article body: ", err.Error())
 		}
 
-		doc.Find(".article-body").Each(func(i int, s *goquery.Selection) {
-			articleBodies = append(articleBodies, s.Text())
-			log.Println(s.Text())
+		doc.Find(".article-body").Each(func(i int, sel *goquery.Selection) {
+			s.repo.PushArticleBody(sel.Text())
 		})
-		log.Info("Received: ", task.Title)
 	}
 }

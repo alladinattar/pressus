@@ -7,6 +7,7 @@ import (
 
 type QueueRepo interface {
 	SaveLinksToArticles([]presenters.ArticleObj) error
+	PushArticleBody(string) error
 	GetTasks(tasks chan presenters.ArticleObj)
 }
 
