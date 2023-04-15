@@ -10,5 +10,5 @@ queue:
   password: "8w5OraD5ea!Q"
 
 search-engine:
-  ip: ""
-  port:
+  ip: "192.168.232.135"
+  port: "9200"

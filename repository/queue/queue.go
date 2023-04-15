@@ -1,4 +1,4 @@
-package repository
+package queue
 
 import (
 	"github.com/pressus/models/presenters"

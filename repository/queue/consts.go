@@ -1,4 +1,4 @@
-package repository
+package queue
 
 const (
 	TASKS_QUEUE  = "tasks"
