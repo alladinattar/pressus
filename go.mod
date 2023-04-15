@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.1
+	github.com/elastic/go-elasticsearch/v7 v7.17.7
 	github.com/gofiber/fiber/v2 v2.42.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/rabbitmq/amqp091-go v1.7.0

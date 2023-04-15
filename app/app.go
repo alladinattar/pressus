@@ -5,7 +5,8 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/pressus/config"
-	"github.com/pressus/repository"
+	"github.com/pressus/repository/queue"
+	"github.com/pressus/repository/search-engine"
 	"github.com/pressus/routes"
 	"github.com/pressus/usecases"
 	"log"
@@ -32,8 +33,9 @@ func Run() {
 		log.Fatalf("Failed connect to queue: %s", err.Error())
 	}
 
-	repo := repository.NewQueueRepo(queueConnection, channel)
-	service := usecases.NewService(env, repo)
+	repo := queue.NewQueueRepo(queueConnection, channel)
+	searchEngine := search.NewEngineRepo(queueConnection, channel)
+	service := usecases.NewService(env, repo, searchEngine)
 
 	go service.ProcessLinks()
 

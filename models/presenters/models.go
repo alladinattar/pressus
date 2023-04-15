@@ -22,4 +22,5 @@ type FlowObj struct {
 type ArticleObj struct {
 	Title string `json:"title"`
 	Link  string `json:"link"`
+	Body  string `json:"body"`
 }
