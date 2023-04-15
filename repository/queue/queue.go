@@ -8,7 +8,7 @@ import (
 type QueueRepo interface {
 	SaveLinksToArticles([]presenters.ArticleObj) error
 	PushArticleBody(string) error
-	GetTasks(tasks chan presenters.ArticleObj)
+	GetTasks(tasks chan amqp091.Delivery)
 }
 
 type queueRepo struct {

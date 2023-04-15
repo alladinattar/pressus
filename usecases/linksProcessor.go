@@ -2,21 +2,28 @@ package usecases
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gofiber/fiber/v2"
 	"github.com/pressus/models/presenters"
+	"github.com/rabbitmq/amqp091-go"
 	log "github.com/sirupsen/logrus"
 )
 
 func (s *service) ProcessLinks() {
-	tasks := make(chan presenters.ArticleObj)
-	go s.repo.GetTasks(tasks)
+	msgs := make(chan amqp091.Delivery)
+	go s.repo.GetTasks(msgs)
 
 	client := fiber.Client{
 		UserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
 	}
-	for task := range tasks {
+	for msg := range msgs {
+		task := &presenters.ArticleObj{}
+		err := json.Unmarshal(msg.Body, &task)
+		if err != nil {
+			log.Error("Failed unmarshall task: ", err.Error())
+		}
 		log.Info("Received from tasks: ", task.Title)
 		requestString := fmt.Sprintf("%s%s", s.GetEnv().Config.Parser.DefaultRoute, task.Link)
 		var resp []byte
@@ -32,5 +39,6 @@ func (s *service) ProcessLinks() {
 		doc.Find(".article-body").Each(func(i int, sel *goquery.Selection) {
 			s.repo.PushArticleBody(sel.Text())
 		})
+		msg.Ack(true)
 	}
 }

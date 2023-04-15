@@ -1,12 +1,11 @@
 package queue
 
 import (
-	"encoding/json"
-	"github.com/pressus/models/presenters"
+	"github.com/rabbitmq/amqp091-go"
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *queueRepo) GetTasks(tasks chan presenters.ArticleObj) {
+func (r *queueRepo) GetTasks(tasks chan amqp091.Delivery) {
 	q, err := r.channel.QueueDeclare(
 		TASKS_QUEUE, // name
 		false,       // durable
@@ -22,7 +21,7 @@ func (r *queueRepo) GetTasks(tasks chan presenters.ArticleObj) {
 	msgs, err := r.channel.Consume(
 		q.Name, // queue
 		"",     // consumer
-		true,   // auto-ack
+		false,  // auto-ack
 		false,  // exclusive
 		false,  // no-local
 		false,  // no-wait
@@ -36,12 +35,12 @@ func (r *queueRepo) GetTasks(tasks chan presenters.ArticleObj) {
 
 	go func() {
 		for d := range msgs {
-			task := &presenters.ArticleObj{}
-			err := json.Unmarshal(d.Body, &task)
-			if err != nil {
-				log.Error("Failed unmarshall task: ", err.Error())
-			}
-			tasks <- *task
+			//task := &presenters.ArticleObj{}
+			//err := json.Unmarshal(d.Body, &task)
+			//if err != nil {
+			//	log.Error("Failed unmarshall task: ", err.Error())
+			//}
+			tasks <- d
 		}
 	}()
 
