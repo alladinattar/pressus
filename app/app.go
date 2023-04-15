@@ -6,7 +6,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/pressus/config"
 	"github.com/pressus/repository/queue"
-	"github.com/pressus/repository/search-engine"
 	"github.com/pressus/routes"
 	"github.com/pressus/usecases"
 	"log"
@@ -34,8 +33,8 @@ func Run() {
 	}
 
 	repo := queue.NewQueueRepo(queueConnection, channel)
-	searchEngine := search.NewEngineRepo(queueConnection, channel)
-	service := usecases.NewService(env, repo, searchEngine)
+	//searchEngine := search.NewEngineRepo(queueConnection, channel)
+	service := usecases.NewService(env, repo /*, searchEngine*/)
 
 	go service.ProcessLinks()
 
