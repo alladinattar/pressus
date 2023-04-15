@@ -8,12 +8,12 @@ import (
 
 func (r *queueRepo) GetTasks(tasks chan presenters.ArticleObj) {
 	q, err := r.channel.QueueDeclare(
-		"tasks", // name
-		false,   // durable
-		false,   // delete when unused
-		false,   // exclusive
-		false,   // no-wait
-		nil,     // arguments
+		TASKS_QUEUE, // name
+		false,       // durable
+		false,       // delete when unused
+		false,       // exclusive
+		false,       // no-wait
+		nil,         // arguments
 	)
 	if err != nil {
 		log.Error("Failed Queue Declare: ", err)

@@ -5,6 +5,10 @@ parser:
   default_route: "https://journal.tinkoff.ru"
 
 queue:
-  ip: "192.168.246.20"
+  ip: "192.168.232.135"
   username: "rabbitmq"
-  password: "rabbitmq"
+  password: "8w5OraD5ea!Q"
+
+search-engine:
+  ip: ""
+  port:

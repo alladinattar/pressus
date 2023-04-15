@@ -8,12 +8,12 @@ import (
 
 func (d *queueRepo) PushArticleBody(body string) error {
 	q, err := d.channel.QueueDeclare(
-		"results", // name
-		false,     // durable
-		false,     // delete when unused
-		false,     // exclusive
-		false,     // no-wait
-		nil,       // arguments
+		RESULT_QUEUE, // name
+		false,        // durable
+		false,        // delete when unused
+		false,        // exclusive
+		false,        // no-wait
+		nil,          // arguments
 	)
 	if err != nil {
 		return err
