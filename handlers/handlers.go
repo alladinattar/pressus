@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/pressus/models/presenters"
 	"github.com/pressus/usecases"
@@ -10,7 +9,6 @@ import (
 
 func GetFlows(service usecases.Service) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		fmt.Println(c.Route().Params)
 		flows, err := service.GetFlows()
 		if err != nil {
 			response := presenters.ResponseStruct{
@@ -31,10 +29,7 @@ func GetFlows(service usecases.Service) fiber.Handler {
 func GetArticlesByFlow(service usecases.Service) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		flow := c.Params("flow_name")
-		//cpuProfile, _ := os.Create("cpuprofile")
-		//pprof.StartCPUProfile(cpuProfile)
-		articles, err := service.GetArticlesByFlow(flow)
-		//pprof.StopCPUProfile()
+		_, err := service.GetArticlesByFlow(flow)
 
 		if err != nil {
 			response := presenters.ResponseStruct{
@@ -45,7 +40,7 @@ func GetArticlesByFlow(service usecases.Service) fiber.Handler {
 			return c.Status(fiber.StatusOK).JSON(response)
 		}
 		response := presenters.ResponseStruct{
-			Data:   articles,
+			Data:   nil,
 			Status: "success",
 		}
 		return c.Status(fiber.StatusOK).JSON(response)

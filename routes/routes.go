@@ -13,5 +13,6 @@ func SetupRoutes(app fiber.Router, service usecases.Service) {
 	flows.Get("/", handlers.GetFlows(service))
 
 	flows.Get("/:flow_name", handlers.GetArticlesByFlow(service))
+	flows.Post("/:flow_name", handlers.SaveArticlesByFlow(service))
 
 }
