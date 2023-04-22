@@ -35,11 +35,6 @@ func (r *queueRepo) GetTasks(tasks chan amqp091.Delivery) {
 
 	go func() {
 		for d := range msgs {
-			//task := &presenters.ArticleObj{}
-			//err := json.Unmarshal(d.Body, &task)
-			//if err != nil {
-			//	log.Error("Failed unmarshall task: ", err.Error())
-			//}
 			tasks <- d
 		}
 	}()

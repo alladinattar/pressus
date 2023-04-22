@@ -8,7 +8,7 @@ import (
 
 type Service interface {
 	GetFlows() ([]presenters.FlowObj, error)
-	GetArticlesByFlow(flow string) ([]presenters.ArticleObj, error)
+	GetArticlesByFlow(flow string) ([]presenters.ArticleLink, error)
 	SaveArticlesByFlow(flow string) (bool, error)
 	ProcessLinks()
 	GetEnv() *config.Env

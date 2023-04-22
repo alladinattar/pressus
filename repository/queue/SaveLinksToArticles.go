@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func (d *queueRepo) SaveLinksToArticles(articlesTitles []presenters.ArticleObj) error {
+func (d *queueRepo) SaveLinksToArticles(articlesTitles []presenters.ArticleLink) error {
 	q, err := d.channel.QueueDeclare(
 		"tasks", // name
 		false,   // durable

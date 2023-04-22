@@ -11,7 +11,7 @@ import (
 	"sync"
 )
 
-func (s *service) GetArticlesByFlow(flow string) ([]presenters.ArticleObj, error) {
+func (s *service) GetArticlesByFlow(flow string) ([]presenters.ArticleLink, error) {
 	articles, err := s.extractArticles(flow)
 	if err != nil {
 		return nil, err
@@ -20,9 +20,9 @@ func (s *service) GetArticlesByFlow(flow string) ([]presenters.ArticleObj, error
 	return articles, nil
 }
 
-func (s *service) extractArticles(flow string) ([]presenters.ArticleObj, error) {
+func (s *service) extractArticles(flow string) ([]presenters.ArticleLink, error) {
 	pages := make(chan int)
-	var articles []presenters.ArticleObj
+	var articles []presenters.ArticleLink
 	go s.checkPages(flow, pages)
 	var wg sync.WaitGroup
 	for page := range pages {
@@ -54,7 +54,7 @@ func (s *service) checkPages(flow string, pages chan<- int) {
 	}
 }
 
-func (s *service) parseArticles(wg *sync.WaitGroup, articles *[]presenters.ArticleObj, flow, page string) error {
+func (s *service) parseArticles(wg *sync.WaitGroup, articles *[]presenters.ArticleLink, flow, page string) error {
 	defer wg.Done()
 	client := fiber.Client{
 		UserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
@@ -74,7 +74,7 @@ func (s *service) parseArticles(wg *sync.WaitGroup, articles *[]presenters.Artic
 
 	doc.Find(".link--MuU14").Each(func(i int, s *goquery.Selection) {
 		link, _ := s.Attr("href")
-		article := presenters.ArticleObj{
+		article := presenters.ArticleLink{
 			Title: s.Text(),
 			Link:  link,
 		}

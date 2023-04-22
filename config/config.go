@@ -27,7 +27,7 @@ type Config struct {
 }
 
 func ReadConfFile(cfg *Config) error {
-	f, err := os.Open("../config.yml")
+	f, err := os.Open("./config.yml")
 	if err != nil {
 		return err
 	}

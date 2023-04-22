@@ -1,5 +1,7 @@
 package presenters
 
+import "time"
+
 type ResponseStruct struct {
 	Data   []string `json:"data"`
 	Status string   `json:"status"`
@@ -19,10 +21,14 @@ type FlowObj struct {
 	Link string `json:"link"`
 }
 
-type ArticleObj struct {
+type ArticleLink struct {
 	Title string `json:"title"`
 	Link  string `json:"link"`
 }
 
-type TaksAck struct {
+type ArticleObj struct {
+	Title  string    `json:"title"`
+	Date   time.Time `json:"date"`
+	Author string    `json:"author"`
+	Link   string    `json:"link"`
 }

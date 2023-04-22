@@ -6,8 +6,8 @@ import (
 )
 
 type QueueRepo interface {
-	SaveLinksToArticles([]presenters.ArticleObj) error
-	PushArticleBody(string) error
+	SaveLinksToArticles([]presenters.ArticleLink) error
+	PushArticleToResults(obj *presenters.ArticleObj) error
 	GetTasks(tasks chan amqp091.Delivery)
 }
 
