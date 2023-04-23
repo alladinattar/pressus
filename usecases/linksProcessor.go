@@ -61,7 +61,7 @@ func (s *service) ProcessLinks() {
 		})
 
 		doc.Find(".article-body").Each(func(i int, sel *goquery.Selection) {
-			if sel.
+
 			article.Body = sel.Text()
 			log.Printf(sel.Text())
 		})
