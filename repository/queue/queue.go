@@ -9,6 +9,7 @@ type QueueRepo interface {
 	SaveLinksToArticles([]presenters.ArticleLink) error
 	PushArticleToResults(obj *presenters.ArticleObj) error
 	GetTasks(tasks chan amqp091.Delivery)
+	GetResults(tasks chan amqp091.Delivery)
 }
 
 type queueRepo struct {

@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"strconv"
 	"sync"
+	"time"
 )
 
 func (s *service) GetArticlesByFlow(flow string) ([]presenters.ArticleLink, error) {
@@ -36,12 +37,12 @@ func (s *service) extractArticles(flow string) ([]presenters.ArticleLink, error)
 
 func (s *service) checkPages(flow string, pages chan<- int) {
 	client := fiber.Client{
-		UserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
+		UserAgent: "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36",
 	}
 	for i := 1; ; i++ {
 		requestString := fmt.Sprintf("%s/%s/%s/page/%s/", s.GetEnv().Config.Parser.DefaultRoute, "flows", flow, strconv.Itoa(i))
 		var resp []byte
-		statusCode, _, err := client.Head(requestString).Get(resp, requestString)
+		statusCode, _, err := client.Head(requestString).Timeout(time.Second*5).Get(resp, requestString)
 		if err != nil {
 			log.Error(err)
 		}
@@ -49,6 +50,7 @@ func (s *service) checkPages(flow string, pages chan<- int) {
 			close(pages)
 			return
 		} else if statusCode == fiber.StatusOK {
+			log.Println("Find page: ", i)
 			pages <- i
 		}
 	}
@@ -57,12 +59,12 @@ func (s *service) checkPages(flow string, pages chan<- int) {
 func (s *service) parseArticles(wg *sync.WaitGroup, articles *[]presenters.ArticleLink, flow, page string) error {
 	defer wg.Done()
 	client := fiber.Client{
-		UserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
+		UserAgent: "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36",
 	}
 
 	requestString := fmt.Sprintf("%s/%s/%s/page/%s/", s.GetEnv().Config.Parser.DefaultRoute, "flows", flow, page)
 	var resp []byte
-	_, body, err := client.Get(requestString).Get(resp, requestString)
+	_, body, err := client.Get(requestString).Timeout(time.Second*5).Get(resp, requestString)
 	if err != nil {
 		return err
 	}

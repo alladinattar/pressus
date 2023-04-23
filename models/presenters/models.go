@@ -27,8 +27,9 @@ type ArticleLink struct {
 }
 
 type ArticleObj struct {
-	Title  string    `json:"title"`
-	Date   time.Time `json:"date"`
-	Author string    `json:"author"`
-	Link   string    `json:"link"`
+	Title   string    `json:"title"`
+	Date    time.Time `json:"date"`
+	Authors []string  `json:"authors"`
+	Link    string    `json:"link"`
+	Body    string    `json:"body"`
 }

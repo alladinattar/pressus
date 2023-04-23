@@ -35,7 +35,7 @@ func (d *queueRepo) PushArticleToResults(article *presenters.ArticleObj) error {
 		false,  // mandatory
 		false,  // immediate
 		amqp.Publishing{
-			ContentType: "plain/text",
+			ContentType: "application/json",
 			Body:        []byte(body),
 		})
 	if err != nil {
