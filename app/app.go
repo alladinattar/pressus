@@ -27,20 +27,27 @@ func Run() {
 	app.Use(logger.New())
 
 	initElastic(*env)
-	queueConnection, channel, err := QueueConnection(env)
-	defer queueConnection.Close()
+	queueConnectionTasks, channel, err := QueueConnection(env)
+	defer queueConnectionTasks.Close()
 	defer channel.Close()
 	if err != nil {
 		log.Fatalf("Failed connect to queue: %s", err.Error())
 	}
 
-	repo := queue.NewQueueRepo(queueConnection, channel)
-	searchEngine := search.NewEngineRepo(queueConnection, channel, *env)
-	service := usecases.NewService(env, repo, searchEngine)
+	queueConnectionResults, channelResult, err := QueueConnection(env)
+	defer queueConnectionResults.Close()
+	defer channelResult.Close()
+	if err != nil {
+		log.Fatalf("Failed connect to queue result: %s", err.Error())
+	}
 
-	go service.ProcessLinks()
+	repoTasks := queue.NewQueueRepo(queueConnectionTasks, channel)
+	repoResult := queue.NewQueueRepo(queueConnectionResults, channelResult)
+	searchEngine := search.NewEngineRepo(queueConnectionResults, channel, *env)
+	service := usecases.NewService(env, repoTasks, repoResult, searchEngine)
+
 	go service.ProcessLinksFromResultQueue()
-
+	go service.ProcessLinks()
 	routes.SetupRoutes(app, service)
 	log.Fatal(app.Listen(env.Config.Api.Port))
 }

@@ -15,11 +15,11 @@ import (
 
 func (s *service) ProcessLinks() {
 	msgs := make(chan amqp091.Delivery)
-	go s.repo.GetTasks(msgs)
-
+	go s.repoTasks.GetTasks(msgs)
 	client := fiber.Client{
 		UserAgent: "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36",
 	}
+
 	for msg := range msgs {
 		task := &presenters.ArticleLink{}
 		err := json.Unmarshal(msg.Body, &task)
@@ -65,14 +65,15 @@ func (s *service) ProcessLinks() {
 		})
 		article.Title = task.Title
 		article.Link = task.Link
-		s.repo.PushArticleToResults(article)
+		s.repoTasks.PushArticleToResults(article)
 		msg.Ack(true)
 	}
+
 }
 
 func (s *service) ProcessLinksFromResultQueue() {
 	articles := make(chan amqp091.Delivery)
-	go s.repo.GetResults(articles)
+	go s.repoResult.GetResults(articles)
 
 	for msg := range articles {
 		article := &presenters.ArticleObj{}

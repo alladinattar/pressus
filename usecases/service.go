@@ -18,12 +18,13 @@ type Service interface {
 
 type service struct {
 	env          *config.Env
-	repo         queue.QueueRepo
+	repoTasks    queue.QueueRepo
+	repoResult   queue.QueueRepo
 	searchEngine search.EngineRepo
 }
 
-func NewService(env *config.Env, repo queue.QueueRepo, searchEngine search.EngineRepo) Service {
-	return &service{env, repo, searchEngine}
+func NewService(env *config.Env, repoTasks queue.QueueRepo, repoResult queue.QueueRepo, searchEngine search.EngineRepo) Service {
+	return &service{env, repoTasks, repoResult, searchEngine}
 }
 
 func (s *service) GetEnv() *config.Env {

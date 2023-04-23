@@ -15,7 +15,6 @@ func (s *engineRepo) SaveArticle(obj presenters.ArticleObj) {
 	body, _ := json.Marshal(obj)
 	client := http.Client{}
 	url := "http://" + s.env.Config.SearchEngine.Ip + ":" + s.env.Config.SearchEngine.Port + "/articles/_doc/" + fmt.Sprintf("%x", hashID)
-	log.Println("URL: ", url)
 	addArticleReq, err := http.NewRequest(http.MethodPut,
 		url,
 		bytes.NewBuffer(body))

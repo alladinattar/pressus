@@ -12,6 +12,11 @@ import (
 	"time"
 )
 
+type Articles struct {
+	mu       sync.Mutex
+	Articles []presenters.ArticleLink
+}
+
 func (s *service) GetArticlesByFlow(flow string) ([]presenters.ArticleLink, error) {
 	articles, err := s.extractArticles(flow)
 	if err != nil {
@@ -23,16 +28,15 @@ func (s *service) GetArticlesByFlow(flow string) ([]presenters.ArticleLink, erro
 
 func (s *service) extractArticles(flow string) ([]presenters.ArticleLink, error) {
 	pages := make(chan int)
-	var articles []presenters.ArticleLink
+	var articles Articles
 	go s.checkPages(flow, pages)
 	var wg sync.WaitGroup
 	for page := range pages {
 		wg.Add(1)
 		go s.parseArticles(&wg, &articles, flow, strconv.Itoa(page))
-		fmt.Println(page)
 	}
 	wg.Wait()
-	return articles, nil
+	return articles.Articles, nil
 }
 
 func (s *service) checkPages(flow string, pages chan<- int) {
@@ -56,7 +60,7 @@ func (s *service) checkPages(flow string, pages chan<- int) {
 	}
 }
 
-func (s *service) parseArticles(wg *sync.WaitGroup, articles *[]presenters.ArticleLink, flow, page string) error {
+func (s *service) parseArticles(wg *sync.WaitGroup, articles *Articles, flow, page string) error {
 	defer wg.Done()
 	client := fiber.Client{
 		UserAgent: "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36",
@@ -80,7 +84,9 @@ func (s *service) parseArticles(wg *sync.WaitGroup, articles *[]presenters.Artic
 			Title: s.Text(),
 			Link:  link,
 		}
-		*articles = append(*articles, article)
+		articles.mu.Lock()
+		defer articles.mu.Unlock()
+		articles.Articles = append(articles.Articles, article)
 	})
 	return nil
 }
