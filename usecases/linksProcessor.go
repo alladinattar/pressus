@@ -60,8 +60,7 @@ func (s *service) ProcessLinks() {
 			}
 		})
 
-		doc.Find(".article-body").Each(func(i int, sel *goquery.Selection) {
-
+		doc.Find(".article-body").First().Each(func(i int, sel *goquery.Selection) {
 			article.Body = sel.Text()
 			log.Printf(sel.Text())
 		})
