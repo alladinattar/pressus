@@ -41,12 +41,12 @@ func (s *service) extractArticles(flow string) ([]presenters.ArticleLink, error)
 
 func (s *service) checkPages(flow string, pages chan<- int) {
 	client := fiber.Client{
-		UserAgent: "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36",
+		UserAgent: s.env.Config.Parser.UserAgent,
 	}
 	for i := 1; ; i++ {
 		requestString := fmt.Sprintf("%s/%s/%s/page/%s/", s.GetEnv().Config.Parser.DefaultRoute, "flows", flow, strconv.Itoa(i))
 		var resp []byte
-		statusCode, _, err := client.Head(requestString).Timeout(time.Second*5).Get(resp, requestString)
+		statusCode, _, err := client.Get(requestString).Timeout(time.Second*5).Get(resp, requestString)
 		if err != nil {
 			log.Error(err)
 		}
@@ -63,7 +63,7 @@ func (s *service) checkPages(flow string, pages chan<- int) {
 func (s *service) parseArticles(wg *sync.WaitGroup, articles *Articles, flow, page string) error {
 	defer wg.Done()
 	client := fiber.Client{
-		UserAgent: "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36",
+		UserAgent: s.env.Config.Parser.UserAgent,
 	}
 
 	requestString := fmt.Sprintf("%s/%s/%s/page/%s/", s.GetEnv().Config.Parser.DefaultRoute, "flows", flow, page)

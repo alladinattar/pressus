@@ -13,6 +13,7 @@ type Config struct {
 	} `yaml:"api"`
 	Parser struct {
 		DefaultRoute string `yaml:"default_route" envconfig:"DEFAULT_ROUTE"`
+		UserAgent    string `yaml:"user_agent" envconfig:"USER_AGENT"`
 	} `yaml:"parser"`
 	Queue struct {
 		Ip       string `yaml:"ip" envconfig:"QUEUE_IP"`

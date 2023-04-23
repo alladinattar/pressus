@@ -3,6 +3,7 @@ api:
   version: "v1.1.1"
 parser:
   default_route: "https://journal.tinkoff.ru"
+  user_agent: "AHHAHAH"
 
 queue:
   ip: "192.168.190.140"

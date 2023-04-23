@@ -33,4 +33,5 @@ type ArticleObj struct {
 	Authors []string  `json:"authors"`
 	Link    string    `json:"link"`
 	Body    string    `json:"body"`
+	Flow    string    `json:"flow"`
 }

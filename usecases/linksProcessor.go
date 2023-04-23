@@ -17,7 +17,7 @@ func (s *service) ProcessLinks() {
 	msgs := make(chan amqp091.Delivery)
 	go s.repoTasks.GetTasks(msgs)
 	client := fiber.Client{
-		UserAgent: "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36",
+		UserAgent: s.env.Config.Parser.UserAgent,
 	}
 
 	for msg := range msgs {
@@ -26,7 +26,7 @@ func (s *service) ProcessLinks() {
 		if err != nil {
 			log.Error("Failed unmarshall task: ", err.Error())
 		}
-		log.Info("Received from tasks: ", task.Title)
+		log.Info("Received task: ", task.Title)
 		requestString := fmt.Sprintf("%s%s", s.GetEnv().Config.Parser.DefaultRoute, task.Link)
 		var resp []byte
 		_, body, err := client.Get(requestString).Timeout(time.Second*5).Get(resp, requestString)
@@ -61,8 +61,11 @@ func (s *service) ProcessLinks() {
 		})
 
 		doc.Find(".article-body").Each(func(i int, sel *goquery.Selection) {
+			if sel.
 			article.Body = sel.Text()
+			log.Printf(sel.Text())
 		})
+		article.Flow = strings.Replace(task.Link, "/", "", -1)
 		article.Title = task.Title
 		article.Link = task.Link
 		s.repoTasks.PushArticleToResults(article)
@@ -81,7 +84,7 @@ func (s *service) ProcessLinksFromResultQueue() {
 		if err != nil {
 			log.Error("Failed unmarshall article: ", err.Error())
 		}
-		log.Info("Received from results: ", article.Title)
+		log.Info("Received result task: ", article.Title)
 
 		err = s.searchEngine.SaveArticle(*article)
 		if err != nil {

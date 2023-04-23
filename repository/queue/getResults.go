@@ -35,7 +35,6 @@ func (r *queueRepo) GetResults(tasks chan amqp091.Delivery) {
 
 	go func() {
 		for d := range msgs {
-			log.Println("New result task: ", d.MessageId)
 			tasks <- d
 		}
 	}()

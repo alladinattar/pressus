@@ -30,6 +30,9 @@ func initElastic(env config.Env) {
 				},
 				"link": {
 					"type":"text"
+				},
+				"flow": {
+					"type":"text"
 				}
 			}
 		}
