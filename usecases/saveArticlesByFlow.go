@@ -6,7 +6,7 @@ func (s *service) SaveArticlesByFlow(flow string) (bool, error) {
 		return false, err
 	}
 
-	s.repo.SaveLinksToArticles(articles)
+	s.repoTasks.SaveLinksToArticles(articles)
 	if err != nil {
 		return false, err
 	}

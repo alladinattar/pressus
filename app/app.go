@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/pressus/config"
 	"github.com/pressus/repository/queue"
+	"github.com/pressus/repository/search-engine"
 	"github.com/pressus/routes"
 	"github.com/pressus/usecases"
 	"log"
@@ -25,19 +26,28 @@ func Run() {
 	app.Use(pprof.New())
 	app.Use(logger.New())
 
-	queueConnection, channel, err := QueueConnection(env)
-	defer queueConnection.Close()
+	initElastic(*env)
+	queueConnectionTasks, channel, err := QueueConnection(env)
+	defer queueConnectionTasks.Close()
 	defer channel.Close()
 	if err != nil {
 		log.Fatalf("Failed connect to queue: %s", err.Error())
 	}
 
-	repo := queue.NewQueueRepo(queueConnection, channel)
-	//searchEngine := search.NewEngineRepo(queueConnection, channel)
-	service := usecases.NewService(env, repo /*, searchEngine*/)
+	queueConnectionResults, channelResult, err := QueueConnection(env)
+	defer queueConnectionResults.Close()
+	defer channelResult.Close()
+	if err != nil {
+		log.Fatalf("Failed connect to queue result: %s", err.Error())
+	}
 
+	repoTasks := queue.NewQueueRepo(queueConnectionTasks, channel)
+	repoResult := queue.NewQueueRepo(queueConnectionResults, channelResult)
+	searchEngine := search.NewEngineRepo(queueConnectionResults, channel, *env)
+	service := usecases.NewService(env, repoTasks, repoResult, searchEngine)
+
+	go service.ProcessLinksFromResultQueue()
 	go service.ProcessLinks()
-
 	routes.SetupRoutes(app, service)
 	log.Fatal(app.Listen(env.Config.Api.Port))
 }

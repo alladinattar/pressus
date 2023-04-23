@@ -6,9 +6,10 @@ import (
 )
 
 type QueueRepo interface {
-	SaveLinksToArticles([]presenters.ArticleObj) error
-	PushArticleBody(string) error
-	GetTasks(tasks chan presenters.ArticleObj)
+	SaveLinksToArticles([]presenters.ArticleLink) error
+	PushArticleToResults(obj *presenters.ArticleObj) error
+	GetTasks(tasks chan amqp091.Delivery)
+	GetResults(tasks chan amqp091.Delivery)
 }
 
 type queueRepo struct {

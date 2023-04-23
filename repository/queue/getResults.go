@@ -5,14 +5,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (r *queueRepo) GetTasks(tasks chan amqp091.Delivery) {
+func (r *queueRepo) GetResults(tasks chan amqp091.Delivery) {
 	q, err := r.channel.QueueDeclare(
-		TASKS_QUEUE, // name
-		false,       // durable
-		false,       // delete when unused
-		false,       // exclusive
-		false,       // no-wait
-		nil,         // arguments
+		RESULT_QUEUE, // name
+		false,        // durable
+		false,        // delete when unused
+		false,        // exclusive
+		false,        // no-wait
+		nil,          // arguments
 	)
 	if err != nil {
 		log.Error("Failed Queue Declare: ", err)
@@ -39,6 +39,6 @@ func (r *queueRepo) GetTasks(tasks chan amqp091.Delivery) {
 		}
 	}()
 
-	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+	log.Printf(" [*] Waiting for messages from results")
 	<-forever
 }

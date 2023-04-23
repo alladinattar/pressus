@@ -2,11 +2,13 @@ package queue
 
 import (
 	"context"
+	"encoding/json"
+	"github.com/pressus/models/presenters"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"time"
 )
 
-func (d *queueRepo) PushArticleBody(body string) error {
+func (d *queueRepo) PushArticleToResults(article *presenters.ArticleObj) error {
 	q, err := d.channel.QueueDeclare(
 		RESULT_QUEUE, // name
 		false,        // durable
@@ -15,6 +17,11 @@ func (d *queueRepo) PushArticleBody(body string) error {
 		false,        // no-wait
 		nil,          // arguments
 	)
+	if err != nil {
+		return err
+	}
+
+	body, err := json.Marshal(article)
 	if err != nil {
 		return err
 	}
@@ -28,7 +35,7 @@ func (d *queueRepo) PushArticleBody(body string) error {
 		false,  // mandatory
 		false,  // immediate
 		amqp.Publishing{
-			ContentType: "plain/text",
+			ContentType: "application/json",
 			Body:        []byte(body),
 		})
 	if err != nil {

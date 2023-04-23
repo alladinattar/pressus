@@ -10,7 +10,7 @@ import (
 
 func (s *service) GetFlows() ([]presenters.FlowObj, error) {
 	client := fiber.Client{
-		UserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
+		UserAgent: s.env.Config.Parser.UserAgent,
 	}
 	requestString := fmt.Sprintf("%s/%s/", s.GetEnv().Config.Parser.DefaultRoute, "flows")
 	var resp []byte
