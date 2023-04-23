@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/pressus/config"
 	"github.com/pressus/repository/queue"
+	"github.com/pressus/repository/search-engine"
 	"github.com/pressus/routes"
 	"github.com/pressus/usecases"
 	"log"
@@ -25,6 +26,7 @@ func Run() {
 	app.Use(pprof.New())
 	app.Use(logger.New())
 
+	initElastic(*env)
 	queueConnection, channel, err := QueueConnection(env)
 	defer queueConnection.Close()
 	defer channel.Close()
@@ -33,10 +35,11 @@ func Run() {
 	}
 
 	repo := queue.NewQueueRepo(queueConnection, channel)
-	//searchEngine := search.NewEngineRepo(queueConnection, channel)
-	service := usecases.NewService(env, repo /*, searchEngine*/)
+	searchEngine := search.NewEngineRepo(queueConnection, channel, *env)
+	service := usecases.NewService(env, repo, searchEngine)
 
 	go service.ProcessLinks()
+	go service.ProcessLinksFromResultQueue()
 
 	routes.SetupRoutes(app, service)
 	log.Fatal(app.Listen(env.Config.Api.Port))

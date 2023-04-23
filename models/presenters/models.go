@@ -27,6 +27,7 @@ type ArticleLink struct {
 }
 
 type ArticleObj struct {
+	ID      string    `json:"id,omitempty"`
 	Title   string    `json:"title"`
 	Date    time.Time `json:"date"`
 	Authors []string  `json:"authors"`

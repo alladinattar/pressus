@@ -60,10 +60,12 @@ func (s *service) ProcessLinks() {
 			}
 		})
 
-		doc.Find(".article-header__title").Each(func(i int, sel *goquery.Selection) {
+		doc.Find(".article-body").Each(func(i int, sel *goquery.Selection) {
 			article.Body = sel.Text()
-			s.repo.PushArticleToResults(article)
 		})
+		article.Title = task.Title
+		article.Link = task.Link
+		s.repo.PushArticleToResults(article)
 		msg.Ack(true)
 	}
 }
@@ -72,30 +74,15 @@ func (s *service) ProcessLinksFromResultQueue() {
 	articles := make(chan amqp091.Delivery)
 	go s.repo.GetResults(articles)
 
-	client := fiber.Client{
-		UserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
-	}
 	for msg := range articles {
-		task := &presenters.ArticleLink{}
-		err := json.Unmarshal(msg.Body, &task)
+		article := &presenters.ArticleObj{}
+		err := json.Unmarshal(msg.Body, &article)
 		if err != nil {
-			log.Error("Failed unmarshall task: ", err.Error())
+			log.Error("Failed unmarshall article: ", err.Error())
 		}
-		log.Info("Received from tasks: ", task.Title)
-		requestString := fmt.Sprintf("%s%s", s.GetEnv().Config.Parser.DefaultRoute, task.Link)
-		var resp []byte
-		_, body, err := client.Get(requestString).Get(resp, requestString)
-		if err != nil {
-			log.Error("Failed request article body: ", err.Error())
-		}
-		doc, err := goquery.NewDocumentFromReader(bytes.NewReader(body))
-		if err != nil {
-			log.Error("Failed parse article body: ", err.Error())
-		}
+		log.Info("Received from results: ", article.Title)
 
-		doc.Find(".article-body").Each(func(i int, sel *goquery.Selection) {
-			s.repo.PushArticleToRusults(sel.Text())
-		})
+		s.searchEngine.SaveArticle(*article)
 		msg.Ack(true)
 	}
 }
