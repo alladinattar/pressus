@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func (s *engineRepo) SaveArticle(obj presenters.ArticleObj) {
+func (s *engineRepo) SaveArticle(obj presenters.ArticleObj) error {
 	hashID := md5.Sum([]byte(obj.Title + obj.Date.String()))
 	body, _ := json.Marshal(obj)
 	client := http.Client{}
@@ -22,14 +22,18 @@ func (s *engineRepo) SaveArticle(obj presenters.ArticleObj) {
 
 	if err != nil {
 		log.Error("Failed add article: ", err.Error())
+		return err
 	}
 
 	resp, err := client.Do(addArticleReq)
 	if err != nil {
 		log.Error("Failed add article to elastic: ", err.Error())
+		return err
 	}
 
 	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
 		log.Error("Failed add article: ", resp.StatusCode)
+		return err
 	}
+	return nil
 }

@@ -83,7 +83,10 @@ func (s *service) ProcessLinksFromResultQueue() {
 		}
 		log.Info("Received from results: ", article.Title)
 
-		s.searchEngine.SaveArticle(*article)
+		err = s.searchEngine.SaveArticle(*article)
+		if err != nil {
+			continue
+		}
 		msg.Ack(true)
 	}
 }

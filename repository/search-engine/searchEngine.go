@@ -7,7 +7,7 @@ import (
 )
 
 type EngineRepo interface {
-	SaveArticle(obj presenters.ArticleObj)
+	SaveArticle(obj presenters.ArticleObj) error
 }
 
 type engineRepo struct {
