@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"bytes"
+	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
@@ -85,6 +86,11 @@ func (s *service) ProcessLinksFromResultQueue() {
 		}
 		log.Info("Received result task: ", article.Title)
 
+		hashID := md5.Sum([]byte(article.Title + article.Date.String()))
+		article.ID = fmt.Sprintf("%x", hashID)
+		//if s.searchEngine.ArticleExist(article.ID){
+		//
+		//}
 		err = s.searchEngine.SaveArticle(*article)
 		if err != nil {
 			continue

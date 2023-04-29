@@ -2,19 +2,16 @@ package search
 
 import (
 	"bytes"
-	"crypto/md5"
 	"encoding/json"
-	"fmt"
 	"github.com/pressus/models/presenters"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
 func (s *engineRepo) SaveArticle(obj presenters.ArticleObj) error {
-	hashID := md5.Sum([]byte(obj.Title + obj.Date.String()))
 	body, _ := json.Marshal(obj)
 	client := http.Client{}
-	url := "http://" + s.env.Config.SearchEngine.Ip + ":" + s.env.Config.SearchEngine.Port + "/articles/_doc/" + fmt.Sprintf("%x", hashID)
+	url := "http://" + s.env.Config.SearchEngine.Ip + ":" + s.env.Config.SearchEngine.Port + "/articles/_doc/" + obj.ID
 	addArticleReq, err := http.NewRequest(http.MethodPut,
 		url,
 		bytes.NewBuffer(body))
