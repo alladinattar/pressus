@@ -33,6 +33,9 @@ func initElastic(env config.Env) {
 				},
 				"flow": {
 					"type":"text"
+				},
+				"views": {
+					"type":"integer"
 				}
 			}
 		}

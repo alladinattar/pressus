@@ -37,6 +37,7 @@ type ArticleObj struct {
 	Date    time.Time `json:"date"`
 	Authors string    `json:"authors"`
 	Link    string    `json:"link"`
+	Views   int       `json:"views"`
 	Body    string    `json:"body"`
 	Flow    string    `json:"flow"`
 }

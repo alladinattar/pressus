@@ -9,6 +9,7 @@ import (
 	"github.com/pressus/models/presenters"
 	log "github.com/sirupsen/logrus"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -110,6 +111,10 @@ func (s *service) parseArticles(wg *sync.WaitGroup, articles *Articles, flow, pa
 		authorName := sel.Find(".author--lrfve").First().Text()
 
 		article.Authors = authorName
+
+		views := strings.Replace(sel.Find(".counter--G0gMq").First().Text(), "K", "", -1)
+		viewsCount, _ := strconv.Atoi(views)
+		article.Views = viewsCount
 
 		article.Flow = flow
 		s.searchEngine.SaveArticle(article)

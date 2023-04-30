@@ -39,19 +39,10 @@ func (s *service) ProcessLinks() {
 			continue
 		}
 
-		article := &presenters.ArticleObj{
-			ID:      task.ID,
-			Title:   task.Title,
-			Date:    task.Date,
-			Link:    task.Link,
-			Flow:    task.Flow,
-			Authors: task.Authors,
-		}
-
 		doc.Find(".article-body").First().Each(func(i int, sel *goquery.Selection) {
-			article.Body = sel.Text()
+			task.Body = sel.Text()
 		})
-		s.repoTasks.PushArticleToResults(article)
+		s.repoTasks.PushArticleToResults(task)
 		msg.Ack(true)
 	}
 
