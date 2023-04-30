@@ -2,7 +2,6 @@ package usecases
 
 import (
 	"bytes"
-	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
@@ -22,7 +21,7 @@ func (s *service) ProcessLinks() {
 	}
 
 	for msg := range msgs {
-		task := &presenters.ArticleLink{}
+		task := &presenters.ArticleObj{}
 		err := json.Unmarshal(msg.Body, &task)
 		if err != nil {
 			log.Error("Failed unmarshall task: ", err.Error())
@@ -41,7 +40,12 @@ func (s *service) ProcessLinks() {
 			continue
 		}
 
-		article := &presenters.ArticleObj{}
+		article := &presenters.ArticleObj{
+			ID:    task.ID,
+			Title: task.Title,
+			Date:  task.Date,
+			Link:  task.Link,
+		}
 
 		var authors []string
 		doc.Find(".article-author__name").Each(func(i int, sel *goquery.Selection) {
@@ -50,24 +54,11 @@ func (s *service) ProcessLinks() {
 		})
 		article.Authors = authors
 
-		doc.Find("._27USv").Each(func(i int, sel *goquery.Selection) {
-			timeAttr, _ := sel.Attr("datetime")
-			if timeAttr != "" {
-				date, err := time.Parse("02.01.06", sel.Text())
-				if err != nil {
-					log.Error("Failed parse date:", err.Error())
-				}
-				article.Date = date
-			}
-		})
-
 		doc.Find(".article-body").First().Each(func(i int, sel *goquery.Selection) {
 			article.Body = sel.Text()
 			log.Printf(sel.Text())
 		})
 		article.Flow = strings.Replace(task.Link, "/", "", -1)
-		article.Title = task.Title
-		article.Link = task.Link
 		s.repoTasks.PushArticleToResults(article)
 		msg.Ack(true)
 	}
@@ -86,12 +77,15 @@ func (s *service) ProcessLinksFromResultQueue() {
 		}
 		log.Info("Received result task: ", article.Title)
 
-		hashID := md5.Sum([]byte(article.Title + article.Date.String()))
-		article.ID = fmt.Sprintf("%x", hashID)
-		//if s.searchEngine.ArticleExist(article.ID){
-		//
-		//}
-		err = s.searchEngine.SaveArticle(*article)
+		if exist, err := s.searchEngine.IsArticleExist(article.ID); exist && err != nil {
+			continue
+		}
+		if err != nil {
+			log.Error("Failed check exist of id:", err.Error())
+			continue
+		}
+
+		err = s.searchEngine.UpdateArticle(*article)
 		if err != nil {
 			continue
 		}

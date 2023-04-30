@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"bytes"
+	"crypto/md5"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gofiber/fiber/v2"
@@ -14,10 +15,10 @@ import (
 
 type Articles struct {
 	mu       sync.Mutex
-	Articles []presenters.ArticleLink
+	Articles []presenters.ArticleObj
 }
 
-func (s *service) GetArticlesByFlow(flow string) ([]presenters.ArticleLink, error) {
+func (s *service) GetArticlesByFlow(flow string) ([]presenters.ArticleObj, error) {
 	articles, err := s.extractArticles(flow)
 	if err != nil {
 		return nil, err
@@ -26,7 +27,7 @@ func (s *service) GetArticlesByFlow(flow string) ([]presenters.ArticleLink, erro
 	return articles, nil
 }
 
-func (s *service) extractArticles(flow string) ([]presenters.ArticleLink, error) {
+func (s *service) extractArticles(flow string) ([]presenters.ArticleObj, error) {
 	pages := make(chan int)
 	var articles Articles
 	go s.checkPages(flow, pages)
@@ -78,12 +79,35 @@ func (s *service) parseArticles(wg *sync.WaitGroup, articles *Articles, flow, pa
 		return err
 	}
 
-	doc.Find(".link--MuU14").Each(func(i int, s *goquery.Selection) {
-		link, _ := s.Attr("href")
-		article := presenters.ArticleLink{
-			Title: s.Text(),
-			Link:  link,
+	doc.Find(".header--ObtZj").Each(func(i int, sel *goquery.Selection) {
+		article := presenters.ArticleObj{}
+
+		timeAttr, exist := sel.Find(".date--mtog9").First().Attr("datetime")
+		if exist {
+			date, err := time.Parse("2006-01-02", timeAttr)
+			if err != nil {
+				log.Error("Failed parse date:", err.Error())
+			}
+			article.Date = date
 		}
+
+		title := sel.Find(".title--zzk3s").First().Text()
+		article.Title = title
+
+		hashID := md5.Sum([]byte(article.Title + article.Date.String()))
+		article.ID = fmt.Sprintf("%x", hashID)
+
+		if exist, _ := s.searchEngine.IsArticleExist(article.ID); exist {
+			log.Info("Article exists: ", article.ID)
+			return
+		}
+
+		link, exist := sel.Find(".link--MuU14").First().Attr("href")
+		if exist {
+			article.Link = link
+		}
+
+		s.searchEngine.SaveArticle(article)
 		articles.mu.Lock()
 		defer articles.mu.Unlock()
 		articles.Articles = append(articles.Articles, article)
