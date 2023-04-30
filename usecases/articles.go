@@ -107,6 +107,11 @@ func (s *service) parseArticles(wg *sync.WaitGroup, articles *Articles, flow, pa
 			article.Link = link
 		}
 
+		authorName := sel.Find(".author--lrfve").First().Text()
+
+		article.Authors = authorName
+
+		article.Flow = flow
 		s.searchEngine.SaveArticle(article)
 		articles.mu.Lock()
 		defer articles.mu.Unlock()

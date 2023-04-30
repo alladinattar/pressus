@@ -7,6 +7,11 @@ type ResponseStruct struct {
 	Status string   `json:"status"`
 }
 
+type ResponseStructWithArticles struct {
+	Data   []ArticleObj `json:"data"`
+	Status string       `json:"status"`
+}
+
 type StatusResponseStruct struct {
 	Status string `json:"status"`
 }
@@ -30,7 +35,7 @@ type ArticleObj struct {
 	ID      string    `json:"id,omitempty"`
 	Title   string    `json:"title"`
 	Date    time.Time `json:"date"`
-	Authors []string  `json:"authors"`
+	Authors string    `json:"authors"`
 	Link    string    `json:"link"`
 	Body    string    `json:"body"`
 	Flow    string    `json:"flow"`

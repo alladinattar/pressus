@@ -10,6 +10,7 @@ type EngineRepo interface {
 	SaveArticle(obj presenters.ArticleObj) error
 	IsArticleExist(id string) (bool, error)
 	UpdateArticle(obj presenters.ArticleObj) error
+	FindByFlowAndAuthor(flow, author string) ([]string, error)
 }
 
 type engineRepo struct {

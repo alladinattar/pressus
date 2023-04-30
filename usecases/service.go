@@ -13,6 +13,7 @@ type Service interface {
 	SaveArticlesByFlow(flow string) (bool, error)
 	ProcessLinks()
 	ProcessLinksFromResultQueue()
+	SearchByFlowAndAuthor(flow, author string) ([]string, error)
 	GetEnv() *config.Env
 }
 

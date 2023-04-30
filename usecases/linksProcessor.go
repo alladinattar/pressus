@@ -9,7 +9,6 @@ import (
 	"github.com/pressus/models/presenters"
 	"github.com/rabbitmq/amqp091-go"
 	log "github.com/sirupsen/logrus"
-	"strings"
 	"time"
 )
 
@@ -41,24 +40,17 @@ func (s *service) ProcessLinks() {
 		}
 
 		article := &presenters.ArticleObj{
-			ID:    task.ID,
-			Title: task.Title,
-			Date:  task.Date,
-			Link:  task.Link,
+			ID:      task.ID,
+			Title:   task.Title,
+			Date:    task.Date,
+			Link:    task.Link,
+			Flow:    task.Flow,
+			Authors: task.Authors,
 		}
-
-		var authors []string
-		doc.Find(".article-author__name").Each(func(i int, sel *goquery.Selection) {
-			author := strings.TrimSpace(sel.Text())
-			authors = append(authors, author)
-		})
-		article.Authors = authors
 
 		doc.Find(".article-body").First().Each(func(i int, sel *goquery.Selection) {
 			article.Body = sel.Text()
-			log.Printf(sel.Text())
 		})
-		article.Flow = strings.Replace(task.Link, "/", "", -1)
 		s.repoTasks.PushArticleToResults(article)
 		msg.Ack(true)
 	}
