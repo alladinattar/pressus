@@ -184,7 +184,43 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"query\": {\r\n        \"match\": {\r\n            \"flow\": \"my-bag\"\r\n        }\r\n    },\r\n    \"size\": 0,\r\n    \"aggs\": {\r\n        \"count_ranges\": {\r\n            \"range\": {\r\n                \"field\": \"views\",\r\n                \"ranges\":[\r\n                    {\r\n                        \"from\":500,\r\n                        \"to\": 900\r\n                    }\r\n                ]\r\n            }\r\n               \r\n        }\r\n    }\r\n}",
+									"raw": "{\r\n    \"query\": {\r\n        \"match\": {\r\n            \"flow\": \"my-bag\"\r\n        }\r\n    },\r\n    \"size\": 0,\r\n    \"aggs\": {\r\n        \"count_ranges\": {\r\n            \"range\": {\r\n                \"field\": \"views\",\r\n                \"ranges\":[\r\n                    {\r\n                        \"from\":500,\r\n                        \"to\": 1000\r\n                    }\r\n                ]\r\n            }\r\n               \r\n        }\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elastic_ip}}/articles/_search?pretty=true",
+									"host": [
+										"{{elastic_ip}}"
+									],
+									"path": [
+										"articles",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "pretty",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "aggr-histogram",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"query\": {\r\n        \"match\": {\r\n            \"flow\":\"my-bag\"\r\n        }\r\n    },\r\n    \"size\": 0,\r\n    \"aggs\": {\r\n        \"avg_quantity\":{\r\n            \"date_histogram\":{\r\n                \"field\": \"date\",\r\n                \"fixed_interval\":\"1d\"\r\n            }\r\n        }\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
