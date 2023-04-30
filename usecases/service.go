@@ -14,6 +14,7 @@ type Service interface {
 	ProcessLinks()
 	ProcessLinksFromResultQueue()
 	SearchByFlowAndAuthor(flow, author string) ([]string, error)
+	SearchByFlowAndDate(flow, from, until string) ([]string, error)
 	GetEnv() *config.Env
 }
 

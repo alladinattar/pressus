@@ -4,6 +4,7 @@ import (
 	"github.com/pressus/config"
 	"github.com/pressus/models/presenters"
 	"github.com/rabbitmq/amqp091-go"
+	"time"
 )
 
 type EngineRepo interface {
@@ -11,6 +12,7 @@ type EngineRepo interface {
 	IsArticleExist(id string) (bool, error)
 	UpdateArticle(obj presenters.ArticleObj) error
 	FindByFlowAndAuthor(flow, author string) ([]string, error)
+	FindByFlowAndDate(flow string, from, until time.Time) ([]string, error)
 }
 
 type engineRepo struct {
