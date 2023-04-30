@@ -112,8 +112,15 @@ func (s *service) parseArticles(wg *sync.WaitGroup, articles *Articles, flow, pa
 
 		article.Authors = authorName
 
-		views := strings.Replace(sel.Find(".counter--G0gMq").First().Text(), "K", "", -1)
-		viewsCount, _ := strconv.Atoi(views)
+		var viewsCount int
+		isThousands := strings.Index(sel.Find(".counter--G0gMq").First().Text(), "K")
+		if isThousands == -1 {
+			viewsCount, _ = strconv.Atoi(sel.Find(".counter--G0gMq").First().Text())
+		} else {
+			viewsCount, _ = strconv.Atoi(strings.Replace(sel.Find(".counter--G0gMq").First().Text(), "K", "", -1))
+			viewsCount = viewsCount * 1000
+		}
+
 		article.Views = viewsCount
 
 		article.Flow = flow

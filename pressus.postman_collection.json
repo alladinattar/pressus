@@ -37,7 +37,7 @@
 							"response": []
 						},
 						{
-							"name": "Exists",
+							"name": "check exist",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -65,207 +65,429 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "search by flow and author",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"query\": {\r\n        \"bool\": {\r\n            \"must\": [\r\n                {\r\n                    \"match\": {\r\n                        \"authors\": \"Кирилл\"\r\n                    }\r\n                },\r\n                {\r\n                    \"match\": {\r\n                        \"flow\": \"relocation\"\r\n                    }\r\n                }\r\n            ]\r\n        }\r\n    },\r\n   \r\n    \"_source\": true\r\n    \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elastic_ip}}/articles/_search?pretty=true",
+									"host": [
+										"{{elastic_ip}}"
+									],
+									"path": [
+										"articles",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "pretty",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "search by date and flow",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"query\": {\r\n        \"bool\": {\r\n            \"must\": [\r\n                {\r\n                    \"match\": {\r\n                        \"flow\": \"relocation\"\r\n                    }\r\n                },\r\n                {\r\n                    \"range\": {\r\n                        \"date\": {\r\n                            \"gte\": \"2023-03-20\"\r\n                        }\r\n                    }\r\n                }\r\n            ]\r\n        }\r\n    },\r\n    \"_source\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elastic_ip}}/articles/_search?pretty=true",
+									"host": [
+										"{{elastic_ip}}"
+									],
+									"path": [
+										"articles",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "pretty",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "aggr-views",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"query\": {\r\n        \"match\": {\r\n            \"flow\":\"my-bag\"\r\n        }\r\n    },\r\n    \"size\": 0,\r\n    \"aggs\": {\r\n        \"avg_quantity\":{\r\n            \"stats\":{\r\n                \"field\": \"views\"\r\n            }\r\n        }\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elastic_ip}}/articles/_search?pretty=true",
+									"host": [
+										"{{elastic_ip}}"
+									],
+									"path": [
+										"articles",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "pretty",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "aggr-ranges",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"query\": {\r\n        \"match\": {\r\n            \"flow\": \"my-bag\"\r\n        }\r\n    },\r\n    \"size\": 0,\r\n    \"aggs\": {\r\n        \"count_ranges\": {\r\n            \"range\": {\r\n                \"field\": \"views\",\r\n                \"ranges\":[\r\n                    {\r\n                        \"from\":500,\r\n                        \"to\": 900\r\n                    }\r\n                ]\r\n            }\r\n               \r\n        }\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elastic_ip}}/articles/_search?pretty=true",
+									"host": [
+										"{{elastic_ip}}"
+									],
+									"path": [
+										"articles",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "pretty",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
 				{
-					"name": "delete articles index",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
+					"name": "Remove",
+					"item": [
+						{
+							"name": "delete articles index",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elastic_ip}}/articles",
+									"host": [
+										"{{elastic_ip}}"
+									],
+									"path": [
+										"articles"
+									]
 								}
-							}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{elastic_ip}}/articles",
-							"host": [
-								"{{elastic_ip}}"
-							],
-							"path": [
-								"articles"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "create articles index",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"settings\" : {\r\n    \"number_of_shards\" : 1,\r\n    \"number_of_replicas\" : 0\r\n  }\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+						{
+							"name": "remove article from index",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{elastic_ip}}/articles/_doc/93f319e8e7f02e7a6d40655094c06336",
+									"host": [
+										"{{elastic_ip}}"
+									],
+									"path": [
+										"articles",
+										"_doc",
+										"93f319e8e7f02e7a6d40655094c06336"
+									]
 								}
-							}
-						},
-						"url": {
-							"raw": "{{elastic_ip}}/articles",
-							"host": [
-								"{{elastic_ip}}"
-							],
-							"path": [
-								"articles"
-							]
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				},
 				{
-					"name": "add article to index",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"title\":\"как написать парсер\",\r\n    \"date\":\"2001-05-11\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+					"name": "Create",
+					"item": [
+						{
+							"name": "create articles index",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"settings\" : {\r\n    \"number_of_shards\" : 1,\r\n    \"number_of_replicas\" : 0\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elastic_ip}}/articles",
+									"host": [
+										"{{elastic_ip}}"
+									],
+									"path": [
+										"articles"
+									]
 								}
-							}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{elastic_ip}}/articles/_doc/29418442b4b737700e0fb6e18d104be5",
-							"host": [
-								"{{elastic_ip}}"
-							],
-							"path": [
-								"articles",
-								"_doc",
-								"29418442b4b737700e0fb6e18d104be5"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "remove article from index",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{elastic_ip}}/articles/_doc/93f319e8e7f02e7a6d40655094c06336",
-							"host": [
-								"{{elastic_ip}}"
-							],
-							"path": [
-								"articles",
-								"_doc",
-								"93f319e8e7f02e7a6d40655094c06336"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "add mapping to index",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"properties\": {\r\n        \"id\": {\r\n            \"type\": \"text\"\r\n        },\r\n        \"title\": {\r\n            \"type\": \"text\"\r\n        },\r\n        \"date\": {\r\n            \"type\": \"date\"\r\n        }\r\n    }\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+						{
+							"name": "add article to index",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\":\"как написать парсер\",\r\n    \"date\":\"2001-05-11\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elastic_ip}}/articles/_doc/29418442b4b737700e0fb6e18d104be5",
+									"host": [
+										"{{elastic_ip}}"
+									],
+									"path": [
+										"articles",
+										"_doc",
+										"29418442b4b737700e0fb6e18d104be5"
+									]
 								}
-							}
+							},
+							"response": []
 						},
+						{
+							"name": "add mapping to index",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"properties\": {\r\n        \"id\": {\r\n            \"type\": \"text\"\r\n        },\r\n        \"title\": {\r\n            \"type\": \"text\"\r\n        },\r\n        \"date\": {\r\n            \"type\": \"date\"\r\n        }\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elastic_ip}}/articles/_mapping",
+									"host": [
+										"{{elastic_ip}}"
+									],
+									"path": [
+										"articles",
+										"_mapping"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update doc",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"doc\": {\r\n        \"title\": \"«Огромные толпы внутри аэропорта»: как я улетел в Армению из Сочи\",\r\n        \"date\": \"2022-10-27T00:00:00Z\",\r\n        \"authors\": null,\r\n        \"link\": \"/relocation-armenia-from-sochi/\",\r\n        \"body\": \"\",\r\n        \"flow\": \"qwe\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elastic_ip}}/articles/_update/93f319e8e7f02e7a6d40655094c06336",
+									"host": [
+										"{{elastic_ip}}"
+									],
+									"path": [
+										"articles",
+										"_update",
+										"93f319e8e7f02e7a6d40655094c06336"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "API",
+			"item": [
+				{
+					"name": "flows",
+					"request": {
+						"method": "GET",
+						"header": [],
 						"url": {
-							"raw": "{{elastic_ip}}/articles/_mapping",
+							"raw": "http://localhost:3000/api/v1/flows",
+							"protocol": "http",
 							"host": [
-								"{{elastic_ip}}"
+								"localhost"
 							],
+							"port": "3000",
 							"path": [
-								"articles",
-								"_mapping"
+								"api",
+								"v1",
+								"flows"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "update doc",
+					"name": "postsByFlow",
 					"request": {
 						"method": "POST",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"doc\": {\r\n        \"title\": \"«Огромные толпы внутри аэропорта»: как я улетел в Армению из Сочи\",\r\n        \"date\": \"2022-10-27T00:00:00Z\",\r\n        \"authors\": null,\r\n        \"link\": \"/relocation-armenia-from-sochi/\",\r\n        \"body\": \"\",\r\n        \"flow\": \"qwe\"\r\n    }\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{elastic_ip}}/articles/_update/93f319e8e7f02e7a6d40655094c06336",
+							"raw": "http://localhost:3000/api/v1/flows/cybersports",
+							"protocol": "http",
 							"host": [
-								"{{elastic_ip}}"
+								"localhost"
 							],
+							"port": "3000",
 							"path": [
-								"articles",
-								"_update",
-								"93f319e8e7f02e7a6d40655094c06336"
+								"api",
+								"v1",
+								"flows",
+								"cybersports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search by flow and author",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/search/author-flow?flow=vazhno&author=Екатерина",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"search",
+								"author-flow"
+							],
+							"query": [
+								{
+									"key": "flow",
+									"value": "vazhno"
+								},
+								{
+									"key": "author",
+									"value": "Екатерина"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search by flow and date",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/search?flow=vazhno&author=Екатерина",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"search"
+							],
+							"query": [
+								{
+									"key": "flow",
+									"value": "vazhno"
+								},
+								{
+									"key": "author",
+									"value": "Екатерина"
+								}
 							]
 						}
 					},
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "flows",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:3000/api/v1/flows",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"v1",
-						"flows"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "postsByFlow",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:3000/api/v1/flows/cybersports",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"v1",
-						"flows",
-						"cybersports"
-					]
-				}
-			},
-			"response": []
 		}
 	]
 }
