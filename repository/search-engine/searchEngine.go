@@ -13,6 +13,7 @@ type EngineRepo interface {
 	UpdateArticle(obj presenters.ArticleObj) error
 	FindByFlowAndAuthor(flow, author string) ([]string, error)
 	FindByFlowAndDate(flow string, from, until time.Time) ([]string, error)
+	GetArticleByID(id string) (*presenters.ArticleObj, error)
 }
 
 type engineRepo struct {
