@@ -36,7 +36,7 @@ func (s *service) getFlows(data []byte) ([]presenters.FlowObj, error) {
 	}
 
 	var flows []presenters.FlowObj
-	doc.Find(".item--QHDrx").Each(func(i int, s *goquery.Selection) {
+	doc.Find(".item--aI3F0").Each(func(i int, s *goquery.Selection) {
 		name := s.Text()
 		link, _ := s.Attr("href")
 		flow := presenters.FlowObj{

@@ -25,6 +25,11 @@ type Config struct {
 		Ip   string `yaml:"ip" envconfig:"SEARCH_ENGINE_IP"`
 		Port string `yaml:"port" envconfig:"SEARCH_ENGINE_PORT"`
 	} `yaml:"search-engine"`
+
+	NERAPI struct {
+		IP   string `yaml:"ip" envconfig:"NERAPI_IP"`
+		Port string `yaml:"port" envconfig:"NERAPI_PORT"`
+	} `yaml:"ner-api"`
 }
 
 func ReadConfFile(cfg *Config) error {

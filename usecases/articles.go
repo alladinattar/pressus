@@ -80,10 +80,10 @@ func (s *service) parseArticles(wg *sync.WaitGroup, articles *Articles, flow, pa
 		return err
 	}
 
-	doc.Find(".header--ObtZj").Each(func(i int, sel *goquery.Selection) {
+	doc.Find(".header--Oqixx").Each(func(i int, sel *goquery.Selection) {
 		article := presenters.ArticleObj{}
 
-		timeAttr, exist := sel.Find(".date--mtog9").First().Attr("datetime")
+		timeAttr, exist := sel.Find(".date--80kR0").First().Attr("datetime")
 		if exist {
 			date, err := time.Parse("2006-01-02", timeAttr)
 			if err != nil {
@@ -92,7 +92,7 @@ func (s *service) parseArticles(wg *sync.WaitGroup, articles *Articles, flow, pa
 			article.Date = date
 		}
 
-		title := sel.Find(".title--zzk3s").First().Text()
+		title := sel.Find(".title--ZfdMh").First().Text()
 		article.Title = title
 
 		hashID := md5.Sum([]byte(article.Title + article.Date.String()))
@@ -108,16 +108,16 @@ func (s *service) parseArticles(wg *sync.WaitGroup, articles *Articles, flow, pa
 			article.Link = link
 		}
 
-		authorName := sel.Find(".author--lrfve").First().Text()
+		authorName := sel.Find(".name--Q6uU8").First().Text()
 
 		article.Authors = authorName
 
 		var viewsCount int
-		isThousands := strings.Index(sel.Find(".counter--G0gMq").First().Text(), "K")
+		isThousands := strings.Index(sel.Find(".counter--N9V5a").First().Text(), "K")
 		if isThousands == -1 {
-			viewsCount, _ = strconv.Atoi(sel.Find(".counter--G0gMq").First().Text())
+			viewsCount, _ = strconv.Atoi(sel.Find(".counter--N9V5a").First().Text())
 		} else {
-			viewsCount, _ = strconv.Atoi(strings.Replace(sel.Find(".counter--G0gMq").First().Text(), "K", "", -1))
+			viewsCount, _ = strconv.Atoi(strings.Replace(sel.Find(".counter--N9V5a").First().Text(), "K", "", -1))
 			viewsCount = viewsCount * 1000
 		}
 

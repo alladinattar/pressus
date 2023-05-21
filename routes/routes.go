@@ -13,6 +13,8 @@ func SetupRoutes(app fiber.Router, service usecases.Service) {
 	search.Get("/author-flow", handlers.SearchByFlowAndAuthor(service))
 	search.Get("/date-flow", handlers.SearchByFlowAndDate(service))
 
+	app.Post("/ner", handlers.ExtractEntities(service))
+
 	flows := api.Group("/flows")
 	flows.Get("/", handlers.GetFlows(service))
 	flows.Get("/:flow_name", handlers.GetArticlesByFlow(service))

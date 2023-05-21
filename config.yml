@@ -13,3 +13,7 @@ queue:
 search-engine:
   ip: "192.168.190.140"
   port: "9200"
+
+ner-api:
+  ip: "localhost"
+  port: "5000"

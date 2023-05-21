@@ -7,6 +7,11 @@ type ResponseStruct struct {
 	Status string   `json:"status"`
 }
 
+type ResponseStructInterface struct {
+	Data   interface{} `json:"data"`
+	Status string      `json:"status"`
+}
+
 type ResponseStructWithArticles struct {
 	Data   []ArticleObj `json:"data"`
 	Status string       `json:"status"`
@@ -40,4 +45,9 @@ type ArticleObj struct {
 	Views   int       `json:"views"`
 	Body    string    `json:"body"`
 	Flow    string    `json:"flow"`
+}
+
+type Entity struct {
+	Text string `json:"text"`
+	Type string `json:"type"`
 }

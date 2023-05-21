@@ -245,6 +245,25 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "get doc by id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{elastic_ip}}/articles/_doc/a5ecd91bf2f5734af9e2daed66874903",
+									"host": [
+										"{{elastic_ip}}"
+									],
+									"path": [
+										"articles",
+										"_doc",
+										"a5ecd91bf2f5734af9e2daed66874903"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
@@ -517,6 +536,31 @@
 								{
 									"key": "author",
 									"value": "Екатерина"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ner",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/ner?id=8667adbceed9d4bd4cfe28714617235b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"ner"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "8667adbceed9d4bd4cfe28714617235b"
 								}
 							]
 						}
